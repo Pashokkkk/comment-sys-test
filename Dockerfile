@@ -17,9 +17,8 @@
 # Stage 1: Build frontend (Vue)
 FROM node:18 AS frontend-build
 WORKDIR /app/frontend
-COPY frontend/package*.json ./
+COPY frontend/ ./  
 RUN npm install
-COPY frontend/ .
 RUN npm run build
 
 # Stage 2: Django backend with Python
