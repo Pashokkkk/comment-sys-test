@@ -16,8 +16,9 @@
 
 # Stage 1: Build frontend (Vue)
 FROM node:18 AS frontend-build
+WORKDIR /app
+COPY frontend/ ./frontend
 WORKDIR /app/frontend
-COPY frontend/ ./  
 RUN npm install
 RUN npm run build
 
