@@ -65,7 +65,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # ← шаблони Vue тут
+        'DIRS': [BASE_DIR / 'backend' / 'static'],  # ← шаблони Vue тут
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
