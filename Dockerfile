@@ -1,32 +1,25 @@
-# ========================
-# Stage 1: Build frontend
-# ========================
+# Stage 1: Build frontend (Vue)
 FROM node:18 AS frontend-build
 
-# Робоча директорія
 WORKDIR /app
 
 # Копіюємо всю папку frontend
 COPY frontend/ ./frontend
 
-# Переходимо в неї
+# Переходимо до папки frontend
 WORKDIR /app/frontend
 
-# Встановлюємо залежності та білдимо
+# Встановлюємо залежності та будуємо проєкт
 RUN npm install
 RUN npm run build
 
-
-# ========================
-# Stage 2: Backend (Django)
-# ========================
+# Stage 2: Django backend with Python
 FROM python:3.10
 
-# Env variables
+# Встановлюємо змінні середовища
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Робоча директорія
 WORKDIR /app
 
 # Встановлюємо Python-залежності
@@ -34,18 +27,18 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Копіюємо backend код
+# Копіюємо код бекенду
 COPY backend/ backend/
 COPY backend/manage.py .
 
-# Копіюємо фронтенд білд у Django шаблони та статичні файли
+# Копіюємо зібраний фронтенд у відповідні папки бекенду
 COPY --from=frontend-build /app/frontend/dist/index.html backend/templates/index.html
 COPY --from=frontend-build /app/frontend/dist/assets/ backend/static/assets/
 
-# Збір статичних файлів
+# Збираємо статичні файли
 RUN python manage.py collectstatic --noinput
 
-# Порт, який слухає Render
+# Відкриваємо порт 8000
 EXPOSE 8000
 
 # Запускаємо ASGI сервер
