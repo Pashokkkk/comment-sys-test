@@ -38,7 +38,7 @@ RUN pip install -r requirements.txt
 
 # Copy backend code
 COPY backend/ backend/
-COPY manage.py .
+COPY backend/manage.py .
 
 # Copy frontend build into backend
 COPY --from=frontend-build /app/frontend/dist/index.html backend/templates/index.html
