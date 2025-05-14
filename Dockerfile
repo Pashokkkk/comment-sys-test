@@ -1,54 +1,52 @@
-# backend/Dockerfile
-# FROM python:3.10
-
-# ENV PYTHONDONTWRITEBYTECODE 1
-# ENV PYTHONUNBUFFERED 1
-
-# WORKDIR /app
-
-# COPY requirements.txt /app/
-# RUN pip install --upgrade pip
-# RUN pip install -r requirements.txt
-
-# COPY backend/ /app/
-# RUN python manage.py collectstatic --noinput
-
-
-# Stage 1: Build frontend (Vue)
+# ========================
+# Stage 1: Build frontend
+# ========================
 FROM node:18 AS frontend-build
+
+# Робоча директорія
 WORKDIR /app
+
+# Копіюємо всю папку frontend
 COPY frontend/ ./frontend
+
+# Переходимо в неї
 WORKDIR /app/frontend
+
+# Встановлюємо залежності та білдимо
 RUN npm install
 RUN npm run build
 
-# Stage 2: Django backend with Python
+
+# ========================
+# Stage 2: Backend (Django)
+# ========================
 FROM python:3.10
 
-# Environment variables
+# Env variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# Робоча директорія
 WORKDIR /app
 
-# Install Python dependencies
+# Встановлюємо Python-залежності
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copy backend code
+# Копіюємо backend код
 COPY backend/ backend/
 COPY backend/manage.py .
 
-# Copy frontend build into backend
+# Копіюємо фронтенд білд у Django шаблони та статичні файли
 COPY --from=frontend-build /app/frontend/dist/index.html backend/templates/index.html
 COPY --from=frontend-build /app/frontend/dist/assets/ backend/static/assets/
 
-# Run collectstatic
+# Збір статичних файлів
 RUN python manage.py collectstatic --noinput
 
-# Expose port (for Render)
+# Порт, який слухає Render
 EXPOSE 8000
 
-# Start ASGI server
+# Запускаємо ASGI сервер
 CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "config.asgi:application"]
