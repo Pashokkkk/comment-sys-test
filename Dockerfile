@@ -31,9 +31,8 @@ RUN pip install -r requirements.txt
 COPY backend/ backend/
 COPY backend/manage.py .
 
-# Копіюємо зібраний фронтенд у відповідні папки бекенду
-COPY --from=frontend-build /app/frontend/dist/index.html backend/templates/index.html
-COPY --from=frontend-build /app/frontend/dist/assets/ backend/static/assets/
+# Копіюємо static файли з фронтенду (vite вивів у backend/static/)
+COPY --from=frontend-build /app/backend/static/ backend/static/
 
 # Збираємо статичні файли
 RUN python manage.py collectstatic --noinput
