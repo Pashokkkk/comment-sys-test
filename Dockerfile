@@ -22,6 +22,9 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
+
+ENV PYTHONPATH=/app/backend
+
 # Встановлюємо Python-залежності
 COPY requirements.txt .
 RUN pip install --upgrade pip
