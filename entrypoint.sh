@@ -2,7 +2,7 @@
 # entrypoint.sh
 
 echo "🚀 ENTRYPOINT SCRIPT IS RUNNING 🚀" >> /app/entrypoint_log.txt
-
+echo "ENTRYPOINT STARTED" >&2
 # Зупини виконання при помилці
 set -e
 
