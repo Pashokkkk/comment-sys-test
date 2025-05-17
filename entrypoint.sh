@@ -1,7 +1,7 @@
 #!/bin/bash
 # entrypoint.sh
 
-echo "🚀 ENTRYPOINT SCRIPT IS RUNNING 🚀"
+echo "🚀 ENTRYPOINT SCRIPT IS RUNNING 🚀" >> /app/entrypoint_log.txt
 
 # Зупини виконання при помилці
 set -e
