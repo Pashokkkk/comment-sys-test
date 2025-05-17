@@ -30,14 +30,14 @@ COPY backend/ /app/
 COPY --from=frontend /frontend_dist /app/frontend_dist
 
 
-
-# Команда collectstatic після вставки фронтенду
-RUN python manage.py collectstatic --noinput
-
 # Entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 RUN cat /app/entrypoint_log.txt || echo "🚫 ENTRYPOINT LOG NOT WRITTEN"
+
+
+# Команда collectstatic після вставки фронтенду
+RUN python manage.py collectstatic --noinput
 
