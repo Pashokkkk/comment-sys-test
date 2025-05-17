@@ -19,6 +19,7 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/test-user/', test_user),
 ]
 
 # Enable debug logging
