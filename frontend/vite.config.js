@@ -3,32 +3,29 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-export default defineConfig(({ command }) => ({
-  // Enable Vue and Vue DevTools plugins
+export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
   ],
 
-  // Set base path for static files
-  base: '/static/',
+  // 👉 Статичні файли шукатимуться з кореня
+  base: '/',
 
-  // Build output config for Django backend
+  // 👉 Вивід у /frontend/dist (як очікує Django)
   build: {
-    outDir: '../backend/static',
+    outDir: 'dist',
     emptyOutDir: true,
     manifest: true
   },
 
-  // Path aliases for cleaner imports
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      jquery: 'jquery/dist/jquery.js', 
+      jquery: 'jquery/dist/jquery.js',
     },
   },
 
-  // Proxy media requests to Django backend
   server: {
     proxy: {
       '/media': {
@@ -38,13 +35,11 @@ export default defineConfig(({ command }) => ({
     }
   },
 
-  // Define globals for legacy libraries
   define: {
     global: {},
   },
 
-  // Pre-bundle specific dependencies
   optimizeDeps: {
     include: ['jquery'],
   },
-}))
+})
