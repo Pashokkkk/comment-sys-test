@@ -93,7 +93,7 @@ onMounted(() => {
 // Fetch a new CAPTCHA image and key
 async function refreshCaptcha() {
   try {
-    const res = await fetch("http://localhost:8000/api/captcha/refresh/")
+    const res = await fetch("/api/captcha/refresh/")
     const data = await res.json()
     form.captcha_key = data.key
     captchaImageUrl.value = "http://localhost:8000" + data.image_url
@@ -162,7 +162,7 @@ async function handleSubmit() {
 
   // Submit the form
   try {
-    const response = await fetch("http://localhost:8000/api/comments/", {
+    const response = await fetch("/api/comments/", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
