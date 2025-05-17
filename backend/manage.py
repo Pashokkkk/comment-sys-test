@@ -2,14 +2,20 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-import django
-django.setup()
-from django.contrib.auth.models import User
-
 
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+
+    # ─── Django setup після DJANGO_SETTINGS_MODULE ───
+    import django
+    django.setup()
+
+    # ─── Створення суперкористувача ───
+    from django.contrib.auth.models import User
+    if not User.objects.filter(username="root").exists():
+        User.objects.create_superuser("root", "root@example.com", "root")
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -20,9 +26,6 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
-
 if __name__ == '__main__':
     main()
-    
-    if not User.objects.filter(username="root").exists():
-        User.objects.create_superuser("root", "root@example.com", "root")
+
