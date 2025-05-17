@@ -12,3 +12,7 @@ RUN pip install -r requirements.txt
 
 COPY backend/ /app/
 RUN python manage.py collectstatic --noinput
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
