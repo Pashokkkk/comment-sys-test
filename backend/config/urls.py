@@ -29,5 +29,5 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Catch-all route for SPA (e.g., Vue, React)
 urlpatterns += [
-    re_path(r'^.*$', never_cache(TemplateView.as_view(template_name='index.html'))),
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
 ]
