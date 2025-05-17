@@ -1,6 +1,8 @@
 #!/bin/bash
 # entrypoint.sh
 
+echo "🚀 ENTRYPOINT SCRIPT IS RUNNING 🚀"
+
 # Зупини виконання при помилці
 set -e
 
