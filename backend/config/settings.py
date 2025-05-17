@@ -65,7 +65,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'backend' / 'templates'],
+        'DIRS': [BASE_DIR / 'frontend/dist'],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,9 +134,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'backend' / 'static',  # ← тут Vue статика
-]
+STATICFILES_DIRS = [BASE_DIR / "frontend/dist"]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
