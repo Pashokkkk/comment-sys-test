@@ -27,5 +27,4 @@ END
 
 # Запускаємо сервер (наприклад daphne або gunicorn)
 echo "Starting server..."
-# exec gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
-gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+exec gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
