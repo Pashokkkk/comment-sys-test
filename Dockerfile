@@ -27,8 +27,8 @@ COPY backend/ /app/
 
 # Копіюємо зібраний frontend у Django-проєкт (наприклад у папку frontend/dist)
 # COPY --from=frontend /frontend/dist /app/frontend/dist
-# COPY --from=frontend /frontend_dist /app/frontend_dist
-COPY --from=frontend /frontend/dist /app/frontend_dist
+COPY --from=frontend /frontend_dist /app/frontend_dist
+
 
 
 # Команда collectstatic після вставки фронтенду
