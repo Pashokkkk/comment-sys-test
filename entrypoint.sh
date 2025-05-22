@@ -1,27 +1,20 @@
 #!/bin/bash
-# entrypoint.sh — запуск Django проєкту на Render
-
-# Зупинити скрипт при помилці
 set -e
 
-echo "🚀 ENTRYPOINT: запуск почато" >&2
-
-echo "📦 Збір статичних файлів..."
+echo "📦 Collecting static..."
 python manage.py collectstatic --noinput
 
-echo "🛠 Застосування міграцій..."
+echo "🛠 Applying migrations..."
 python manage.py migrate --noinput
 
-echo "👤 Створення суперкористувача (якщо його ще немає)..."
+echo "👤 Creating superuser if not exists..."
 python manage.py shell << END
 from django.contrib.auth import get_user_model
 User = get_user_model()
 if not User.objects.filter(username="root").exists():
     User.objects.create_superuser("root", "root@example.com", "root")
-    print("✅ Суперкористувача 'root' створено")
-else:
-    print("ℹ️ Суперкористувач 'root' вже існує")
+    print("✅ Superuser created")
 END
 
-echo "🚀 Запуск сервера Gunicorn + Uvicorn..."
+echo "🚀 Starting Daphne server..."
 exec daphne -b 0.0.0.0 -p 8000 config.asgi:application
