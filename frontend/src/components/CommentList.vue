@@ -35,7 +35,8 @@
 
 <script>
 import CommentItem from './CommentItem.vue'
-
+const API = import.meta.env.VITE_API_URL
+  
 export default {
   components: { CommentItem },
   data() {
@@ -58,7 +59,11 @@ export default {
     this.fetchComments()
 
     // Open WebSocket connection
-    const socket = new WebSocket("ws://" + window.location.hostname + ":8000/ws/comments/")
+    const socket = new WebSocket(
+    (window.location.protocol === "https:" ? "wss://" : "ws://") +
+    window.location.host +
+    "/ws/comments/"
+  )
 
     // Handle incoming comment (only top-level)
     socket.onmessage = (event) => {
@@ -78,7 +83,7 @@ export default {
     // Fetch paginated & sorted comments
     async fetchComments() {
       this.loading = true
-      const url = `http://localhost:8000/api/comments/?page=${this.page}&ordering=${this.ordering}`
+      const url = `${API}/comments/?page=${this.page}&ordering=${this.ordering}`
 
       try {
         const res = await fetch(url)
