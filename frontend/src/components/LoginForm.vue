@@ -37,7 +37,7 @@ onMounted(() => {
 const login = async () => {
   error.value = ''
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/token/`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/token/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
