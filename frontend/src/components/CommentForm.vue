@@ -62,6 +62,8 @@
 // Import Vue features
 import { ref, reactive, onMounted } from 'vue'
 
+const API = import.meta.env.VITE_API_URL
+  
 // Form state with all necessary fields
 const form = reactive({
   username: '',
@@ -93,10 +95,10 @@ onMounted(() => {
 // Fetch a new CAPTCHA image and key
 async function refreshCaptcha() {
   try {
-    const res = await fetch("/api/captcha/refresh/")
+    const res = await fetch(`${API}/captcha/refresh/`)
     const data = await res.json()
     form.captcha_key = data.key
-    captchaImageUrl.value = "http://localhost:8000" + data.image_url
+    captchaImageUrl.value = `${API}${data.image_url}`
     form.captcha_text = ''
   } catch (error) {
     console.error("❌ Failed to refresh CAPTCHA", error)
@@ -162,7 +164,7 @@ async function handleSubmit() {
 
   // Submit the form
   try {
-    const response = await fetch("/api/comments/", {
+    const response = await fetch(`${API}/comments/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
