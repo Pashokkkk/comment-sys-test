@@ -14,7 +14,7 @@ export default defineConfig({
 
   // 👉 Вивід у /frontend/dist (як очікує Django)../frontend_dist
   build: {
-    outDir: 'dist',
+    outDir: '../frontend_dist',
     emptyOutDir: true,
     manifest: true
   },
