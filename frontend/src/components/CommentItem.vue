@@ -65,7 +65,7 @@ const props = defineProps({
   comment: Object
 })
 
-const backendBase = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const backendBase = import.meta.env.VITE_BASE_URL || 'http://localhost:8000'
 
 // Resolve full file URL
 function resolveUrl(path) {
