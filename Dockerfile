@@ -25,13 +25,7 @@ RUN pip install -r requirements.txt
 # Копіюємо Django проєкт
 COPY backend/ /app/
 
-# Копіюємо зібраний frontend у Django-проєкт (наприклад у папку frontend/dist)
-# COPY --from=frontend /frontend/dist /app/frontend/dist
 COPY --from=frontend /frontend_dist /app/frontend_dist
-
-# Команда collectstatic після вставки фронтенду
-RUN python manage.py collectstatic --noinput
-
 
 # Entrypoint
 COPY entrypoint.sh /entrypoint.sh
