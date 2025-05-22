@@ -16,4 +16,5 @@ daphne
 channels_redis
 gunicorn
 uvicorn
+psycopg2-binary>=2.9
 
