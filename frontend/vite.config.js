@@ -10,11 +10,11 @@ export default defineConfig({
   ],
 
   // 👉 Статичні файли шукатимуться з кореня
-  base: '/static/',
+  base: '/',
 
-  // 👉 Вивід у /frontend/dist (як очікує Django)
+  // 👉 Вивід у /frontend/dist (як очікує Django)../frontend_dist
   build: {
-    outDir: '../frontend_dist',
+    outDir: 'dist',
     emptyOutDir: true,
     manifest: true
   },
