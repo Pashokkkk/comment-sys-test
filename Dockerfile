@@ -32,5 +32,3 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-RUN cat /app/entrypoint_log.txt || echo "🚫 ENTRYPOINT LOG NOT WRITTEN"
-
