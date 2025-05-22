@@ -16,7 +16,7 @@ async function checkTokenValidity() {
   }
 
   try {
-    const res = await fetch('/api/comments/', {
+    const res = await fetch(`${API}/comments/`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
