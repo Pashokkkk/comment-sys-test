@@ -25,7 +25,7 @@ RUN pip install -r requirements.txt
 # Копіюємо Django проєкт
 COPY backend/ /app/
 
-COPY --from=frontend /frontend/dist /app/frontend_dist
+COPY --from=frontend /frontend_dist /app/frontend_dist
 
 # Entrypoint
 COPY entrypoint.sh /entrypoint.sh
