@@ -4,6 +4,8 @@ import CommentForm from './components/CommentForm.vue'
 import CommentList from './components/CommentList.vue'
 import LoginForm from './components/LoginForm.vue'
 
+const API = import.meta.env.VITE_API_URL
+
 const isLoggedIn = ref(false)
 const justLoggedOut = ref(false)
 
