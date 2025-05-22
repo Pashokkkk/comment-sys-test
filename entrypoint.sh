@@ -1,30 +1,27 @@
 #!/bin/bash
-# entrypoint.sh
+# entrypoint.sh — запуск Django проєкту на Render
 
-# Зупини виконання при помилці
+# Зупинити скрипт при помилці
 set -e
 
-echo "🚀 ENTRYPOINT SCRIPT IS RUNNING 🚀" >> /app/entrypoint_log.txt
-echo "ENTRYPOINT STARTED" >&2
+echo "🚀 ENTRYPOINT: запуск почато" >&2
 
-# Збираємо статику
-echo "Collecting static files..."
+echo "📦 Збір статичних файлів..."
 python manage.py collectstatic --noinput
 
-# Міграції (опціонально)
-echo "Applying database migrations..."
-python manage.py migrate
+echo "🛠 Застосування міграцій..."
+python manage.py migrate --noinput
 
-echo "👤 Creating superuser if it doesn't exist..."
+echo "👤 Створення суперкористувача (якщо його ще немає)..."
 python manage.py shell << END
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 if not User.objects.filter(username="root").exists():
     User.objects.create_superuser("root", "root@example.com", "root")
-    print("✅ Superuser 'root' created.")
+    print("✅ Суперкористувача 'root' створено")
 else:
-    print("ℹ️ Superuser 'root' already exists.")
+    print("ℹ️ Суперкористувач 'root' вже існує")
 END
 
-# Запускаємо сервер (наприклад daphne або gunicorn)
-echo "Starting server..."
+echo "🚀 Запуск сервера Gunicorn + Uvicorn..."
 exec gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
