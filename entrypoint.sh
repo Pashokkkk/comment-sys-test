@@ -24,4 +24,4 @@ else:
 END
 
 echo "🚀 Запуск сервера Gunicorn + Uvicorn..."
-exec gunicorn config.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+exec daphne -b 0.0.0.0 -p 8000 config.asgi:application
