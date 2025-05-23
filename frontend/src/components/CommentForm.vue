@@ -98,7 +98,7 @@ async function refreshCaptcha() {
     const res = await fetch(`${API}/captcha/refresh/`)
     const data = await res.json()
     form.captcha_key = data.key
-    captchaImageUrl.value = `${API}${data.image_url}`
+    captchaImageUrl.value = API.replace(/\/api\/?$/, '') + data.image_url
     form.captcha_text = ''
   } catch (error) {
     console.error("❌ Failed to refresh CAPTCHA", error)
