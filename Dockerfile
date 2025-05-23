@@ -27,6 +27,8 @@ COPY backend/ /app/
 
 COPY --from=frontend /frontend_dist /app/frontend_dist
 
+RUN mkdir -p /app/media/uploads
+
 # Entrypoint
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
