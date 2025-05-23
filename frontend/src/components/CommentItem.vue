@@ -69,8 +69,7 @@ const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:8000').re
 
 // Resolve full file URL
 function resolveUrl(path) {
-  if (!path) return ''
-  return path.startsWith('http') ? path : backendBase + path
+  return path || ''
 }
 
 // Check if file is an image
