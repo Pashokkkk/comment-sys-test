@@ -195,6 +195,16 @@ async function handleSubmit() {
       }
     }
 
+    function resetForm() {
+      form.username = ""
+      form.email = ""
+      form.homepage_url = ""
+      form.text = ""
+      form.captcha_text = ""
+      form.captcha_key = ""
+      form.file = null
+      refreshCaptcha()
+    }
     // Show success and reset form
     const newComment = await response.json()
     successMessage.value = "✅ Comment submitted!"
@@ -202,14 +212,7 @@ async function handleSubmit() {
     // Emit to parent so it can update immediately
     emit("submitted", newComment)
     
-    form.username = ""
-    form.email = ""
-    form.homepage_url = ""
-    form.text = ""
-    form.captcha_text = ""
-    form.captcha_key = ""
-    form.file = null
-    refreshCaptcha()
+    resetForm()
     
   } catch (error) {
     errorMessage.value = error.message
