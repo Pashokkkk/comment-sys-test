@@ -39,19 +39,29 @@ const API = import.meta.env.VITE_API_URL
 
 export default {
   components: { CommentItem },
+
+  props: {
+    initialComments: {
+      type: Array,
+      default: () => []
+    }
+  },
+
   data() {
     return {
-      comments: [],
+      comments: [...this.initialComments],
       page: 1,
       hasMore: true,
       loading: false,
       ordering: '-created_at',
     }
   },
+
   watch: {
     page: 'fetchComments',
     ordering: 'fetchComments',
   },
+
   mounted() {
     this.fetchComments()
 
@@ -64,13 +74,12 @@ export default {
 
     socket.onmessage = (event) => {
       const newComment = JSON.parse(event.data)
-
-      // Додати тільки top-level коментар
       if (!newComment.parent_comment) {
         this.comments.unshift(newComment)
       }
     }
   },
+
   methods: {
     async fetchComments() {
       this.loading = true
@@ -85,7 +94,7 @@ export default {
         this.loading = false
       }
     },
-    // Цей метод викликається з CommentForm @submitted
+
     addComment(newComment) {
       if (!newComment.parent_comment) {
         this.comments.unshift(newComment)
