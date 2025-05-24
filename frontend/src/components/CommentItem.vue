@@ -60,9 +60,11 @@ function toggleReply() {
 }
 
 function resolveUrl(path) {
+  if (path?.startsWith('http')) return path
   const base = (import.meta.env.VITE_API_URL || '').replace('/api', '')
-  return path ? base + path : ''
+  return base + path
 }
+
 
 function isImage(url) {
   return /\.(jpg|jpeg|png|gif)$/i.test(url || '')
