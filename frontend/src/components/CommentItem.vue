@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import CommentItem from './CommentItem.vue'
 import CommentForm from './CommentForm.vue'
 
