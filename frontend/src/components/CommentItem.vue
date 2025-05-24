@@ -65,54 +65,44 @@ const props = defineProps({
   comment: Object
 })
 
-
 const localComment = reactive({ ...props.comment })
-  
 const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace('/api', '')
 const showReplyForm = ref(false)
 
-// Toggle reply form visibility
 function toggleReply() {
   showReplyForm.value = !showReplyForm.value
 }
 
 async function fetchReplies() {
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}?parent_comment=${props.comment.id}`)
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/comments/?parent_comment=${localComment.id}`)
     const data = await res.json()
-    props.comment.replies = data.results
+    return data.results
   } catch (error) {
     console.error("❌ Failed to fetch replies:", error)
+    return []
   }
 }
 
-function onReplySubmitted(newReply) {
+async function onReplySubmitted() {
   showReplyForm.value = false
-
-  // Ініціалізуємо replies, якщо вони ще не створені
-  if (!localComment.replies) {
-    localComment.replies = []
-  }
-
-  localComment.replies.push(newReply)
+  const replies = await fetchReplies()
+  localComment.replies = replies
 }
 
-
-// Resolve full file URL
 function resolveUrl(path) {
   return path || ''
 }
 
-// Check if file is an image
 function isImage(url) {
   return /\.(jpg|jpeg|png|gif)$/i.test(url || '')
 }
 
-// Check if file is a text file
 function isTextFile(url) {
   return /\.(txt|md)$/i.test(url || '')
 }
 </script>
+
 
 
 <style scoped>
