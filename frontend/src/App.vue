@@ -69,3 +69,14 @@ function addComment(newComment) {
     </div>
   </div>
 </template>
+
+
+<style scoped>
+.info {
+  background-color: #eaf4ff;
+  color: #333;
+  padding: 10px;
+  border-left: 5px solid #2196F3;
+  margin-top: 10px;
+}
+</style>
