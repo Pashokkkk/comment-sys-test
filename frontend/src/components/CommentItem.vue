@@ -78,7 +78,7 @@ function toggleReply() {
 
 async function fetchReplies() {
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/comments/?parent_comment=${props.comment.id}`)
+    const res = await fetch(`${import.meta.env.VITE_API_URL}?parent_comment=${props.comment.id}`)
     const data = await res.json()
     props.comment.replies = data.results
   } catch (error) {
