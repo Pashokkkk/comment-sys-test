@@ -9,36 +9,24 @@
       </div>
     </div>
 
-    <!-- Show homepage if available -->
     <p v-if="localComment.homepage_url">
       🌐 <a :href="localComment.homepage_url" target="_blank" rel="noopener noreferrer">
         {{ localComment.homepage_url }}
       </a>
     </p>
 
-    <!-- Display comment content -->
     <div class="comment-content" v-html="localComment.text"></div>
 
-    <!-- Show image preview with lightbox -->
     <div v-if="isImage(localComment.file_upload)" class="comment-media">
-      <a
-        :href="resolveUrl(localComment.file_upload)"
-        data-lightbox="image-set"
-        :data-title="localComment.username"
-      >
-        <img
-          :src="resolveUrl(localComment.file_upload)"
-          class="comment-image-preview"
-        />
+      <a :href="resolveUrl(localComment.file_upload)" data-lightbox="image-set" :data-title="localComment.username">
+        <img :src="resolveUrl(localComment.file_upload)" class="comment-image-preview" />
       </a>
     </div>
 
-    <!-- Show download link for text file -->
     <div v-else-if="isTextFile(localComment.file_upload)">
       <a :href="resolveUrl(localComment.file_upload)" target="_blank">📎 Download attached file</a>
     </div>
 
-    <!-- Display replies recursively -->
     <div class="replies" v-if="localComment.replies && localComment.replies.length">
       <CommentItem
         v-for="reply in localComment.replies"
@@ -46,18 +34,17 @@
         :comment="reply"
       />
     </div>
-  </div>
 
-  <!-- Toggle reply form -->
-  <button @click="toggleReply" style="margin-bottom: 20px;">↩️ Reply</button>
+    <button @click="toggleReply" style="margin-bottom: 20px;">↩️ Reply</button>
 
-  <div v-if="showReplyForm" class="reply-form" style="margin-bottom: 0px;">
-    <CommentForm :parentId="localComment.id" @submitted="onReplySubmitted" />
+    <div v-if="showReplyForm" class="reply-form" style="margin-bottom: 0px;">
+      <CommentForm :parentId="localComment.id" @submitted="onReplySubmitted" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import CommentItem from './CommentItem.vue'
 import CommentForm from './CommentForm.vue'
 
@@ -66,32 +53,15 @@ const props = defineProps({
 })
 
 const localComment = reactive({ ...props.comment })
-const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace('/api', '')
 const showReplyForm = ref(false)
 
 function toggleReply() {
   showReplyForm.value = !showReplyForm.value
 }
 
-async function fetchReplies() {
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/comments/?parent_comment=${localComment.id}`)
-    const data = await res.json()
-    return data.results
-  } catch (error) {
-    console.error("❌ Failed to fetch replies:", error)
-    return []
-  }
-}
-
-async function onReplySubmitted() {
-  showReplyForm.value = false
-  const replies = await fetchReplies()
-  localComment.replies = replies
-}
-
 function resolveUrl(path) {
-  return path || ''
+  const base = (import.meta.env.VITE_API_URL || '').replace('/api', '')
+  return path ? base + path : ''
 }
 
 function isImage(url) {
@@ -100,6 +70,13 @@ function isImage(url) {
 
 function isTextFile(url) {
   return /\.(txt|md)$/i.test(url || '')
+}
+
+async function onReplySubmitted(newReply) {
+  if (!localComment.replies) {
+    localComment.replies = []
+  }
+  localComment.replies.push(newReply)  // додаємо одразу
 }
 </script>
 
