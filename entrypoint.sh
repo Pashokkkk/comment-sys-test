@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "📁 Ensuring media/uploads directory exists..."
+mkdir -p /app/media/uploads
+
 echo "📦 Collecting static..."
 python manage.py collectstatic --noinput
 
