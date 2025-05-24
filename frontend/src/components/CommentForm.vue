@@ -67,7 +67,7 @@ const API = import.meta.env.VITE_API_URL
 const emit = defineEmits(['submitted'])
   
 // Form state with all necessary fields
-const form = ref({
+const form = reactive({
   username: '',
   email: '',
   homepage_url: '',
@@ -95,17 +95,15 @@ onMounted(() => {
 })
   
 function resetForm() {
-  form.value = {
-    username: '',
-    email: '',
-    homepage_url: '',
-    text: '',
-    captcha_text: '',
-    captcha_key: '',
-    file: null
-  }
-  refreshCaptcha()
-}
+    form.username = ""
+    form.email = ""
+    form.homepage_url = ""
+    form.text = ""
+    form.captcha_text = ""
+    form.captcha_key = ""
+    form.file = null
+    refreshCaptcha()
+} 
   
 // Fetch a new CAPTCHA image and key
 async function refreshCaptcha() {
