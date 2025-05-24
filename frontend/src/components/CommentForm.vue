@@ -93,7 +93,18 @@ onMounted(() => {
   console.log("🚀 CommentForm mounted")
   refreshCaptcha()
 })
-
+  
+function resetForm() {
+    form.username = ""
+    form.email = ""
+    form.homepage_url = ""
+    form.text = ""
+    form.captcha_text = ""
+    form.captcha_key = ""
+    form.file = null
+    refreshCaptcha()
+}  
+  
 // Fetch a new CAPTCHA image and key
 async function refreshCaptcha() {
   try {
@@ -195,16 +206,6 @@ async function handleSubmit() {
       }
     }
 
-    function resetForm() {
-      form.username = ""
-      form.email = ""
-      form.homepage_url = ""
-      form.text = ""
-      form.captcha_text = ""
-      form.captcha_key = ""
-      form.file = null
-      refreshCaptcha()
-    }
     // Show success and reset form
     const newComment = await response.json()
     successMessage.value = "✅ Comment submitted!"
