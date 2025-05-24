@@ -66,6 +66,27 @@ const props = defineProps({
 })
 
 const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace('/api', '')
+const showReplyForm = ref(false)
+
+// Toggle reply form visibility
+function toggleReply() {
+  showReplyForm.value = !showReplyForm.value
+}
+
+async function fetchReplies() {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/comments/?parent_comment=${props.comment.id}`)
+    const data = await res.json()
+    props.comment.replies = data.results
+  } catch (error) {
+    console.error("❌ Failed to fetch replies:", error)
+  }
+}
+
+function onReplySubmitted() {
+  showReplyForm.value = false
+  fetchReplies() 
+}
 
 // Resolve full file URL
 function resolveUrl(path) {
@@ -81,19 +102,8 @@ function isImage(url) {
 function isTextFile(url) {
   return /\.(txt|md)$/i.test(url || '')
 }
-
-const showReplyForm = ref(false)
-
-// Toggle reply form visibility
-function toggleReply() {
-  showReplyForm.value = !showReplyForm.value
-}
-
-// Close reply form after submission
-function onReplySubmitted() {
-  showReplyForm.value = false
-}
 </script>
+
 
 <style scoped>
 .comment {
