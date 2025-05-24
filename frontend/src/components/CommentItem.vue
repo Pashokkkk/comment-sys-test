@@ -86,10 +86,17 @@ async function fetchReplies() {
   }
 }
 
-function onReplySubmitted() {
+function onReplySubmitted(newReply) {
   showReplyForm.value = false
-  fetchReplies() 
+
+  // Ініціалізуємо replies, якщо вони ще не створені
+  if (!localComment.replies) {
+    localComment.replies = []
+  }
+
+  localComment.replies.push(newReply)
 }
+
 
 // Resolve full file URL
 function resolveUrl(path) {
