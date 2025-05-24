@@ -65,6 +65,9 @@ import { ref, reactive, onMounted } from 'vue'
 const API = import.meta.env.VITE_API_URL
 
 const emit = defineEmits(['submitted'])
+
+const newComment = await response.json()
+emit("submitted", newComment)
   
 // Form state with all necessary fields
 const form = reactive({
