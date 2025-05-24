@@ -209,11 +209,13 @@ async function handleSubmit() {
     // Show success and reset form
     const newComment = await response.json()
     successMessage.value = "✅ Comment submitted!"
-    
-    // Emit to parent so it can update immediately
+
     emit("submitted", newComment)
     
-    resetForm()
+    setTimeout(() => {
+      successMessage.value = ''
+      resetForm()
+    }, 2500)
     
   } catch (error) {
     errorMessage.value = error.message
