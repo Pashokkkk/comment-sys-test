@@ -54,7 +54,7 @@ function logout() {
     <!-- Authenticated view -->
     <div v-if="isLoggedIn">
       <button @click="logout">Logout</button>
-      <CommentForm />
+      <CommentForm @submitted="addComment" />
       <hr />
       <CommentList />
     </div>
