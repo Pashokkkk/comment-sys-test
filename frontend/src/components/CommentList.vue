@@ -36,64 +36,59 @@
 <script>
 import CommentItem from './CommentItem.vue'
 const API = import.meta.env.VITE_API_URL
-  
+
 export default {
   components: { CommentItem },
   data() {
     return {
       comments: [],
       page: 1,
-      pageSize: 25,
       hasMore: true,
-      interval: null,
       loading: false,
       ordering: '-created_at',
     }
   },
   watch: {
-    // Fetch comments on page change
-    page: 'fetchComments'
+    page: 'fetchComments',
+    ordering: 'fetchComments',
   },
   mounted() {
-    // Initial fetch
     this.fetchComments()
 
-    // Open WebSocket connection
+    // WebSocket для live-коментарів
     const socket = new WebSocket(
-    (window.location.protocol === "https:" ? "wss://" : "ws://") +
-    window.location.host +
-    "/ws/comments/"
-  )
+      (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
+      window.location.host +
+      '/ws/comments/'
+    )
 
-    // Handle incoming comment (only top-level)
     socket.onmessage = (event) => {
       const newComment = JSON.parse(event.data)
 
-      // Add only top-level comments (not replies)
+      // Додати тільки top-level коментар
       if (!newComment.parent_comment) {
         this.comments.unshift(newComment)
       }
     }
   },
-  beforeUnmount() {
-    // Clean up intervals if used
-    clearInterval(this.interval)
-  },
   methods: {
-    // Fetch paginated & sorted comments
     async fetchComments() {
       this.loading = true
-      const url = `${API}/comments/?page=${this.page}&ordering=${this.ordering}`
-
       try {
-        const res = await fetch(url)
+        const res = await fetch(`${API}/comments/?page=${this.page}&ordering=${this.ordering}`)
         const data = await res.json()
         this.comments = data.results
         this.hasMore = !!data.next
       } catch (err) {
-        console.error('Failed to load comments', err)
+        console.error('❌ Failed to load comments', err)
       } finally {
         this.loading = false
+      }
+    },
+    // Цей метод викликається з CommentForm @submitted
+    addComment(newComment) {
+      if (!newComment.parent_comment) {
+        this.comments.unshift(newComment)
       }
     }
   }
