@@ -3,45 +3,45 @@
     <div class="comment-header">
       <div class="comment-avatar"></div>
       <div class="comment-meta">
-        <strong>{{ comment.username }}</strong>
-        <div class="comment-email">{{ comment.email }}</div>
-        <div class="comment-date">{{ new Date(comment.created_at).toLocaleString() }}</div>
+        <strong>{{ localComment.username }}</strong>
+        <div class="comment-email">{{ localComment.email }}</div>
+        <div class="comment-date">{{ new Date(localComment.created_at).toLocaleString() }}</div>
       </div>
     </div>
 
     <!-- Show homepage if available -->
-    <p v-if="comment.homepage_url">
-      🌐 <a :href="comment.homepage_url" target="_blank" rel="noopener noreferrer">
-        {{ comment.homepage_url }}
+    <p v-if="localComment.homepage_url">
+      🌐 <a :href="localComment.homepage_url" target="_blank" rel="noopener noreferrer">
+        {{ localComment.homepage_url }}
       </a>
     </p>
 
     <!-- Display comment content -->
-    <div class="comment-content" v-html="comment.text"></div>
+    <div class="comment-content" v-html="localComment.text"></div>
 
     <!-- Show image preview with lightbox -->
-    <div v-if="isImage(comment.file_upload)" class="comment-media">
+    <div v-if="isImage(localComment.file_upload)" class="comment-media">
       <a
-        :href="resolveUrl(comment.file_upload)"
+        :href="resolveUrl(localComment.file_upload)"
         data-lightbox="image-set"
-        :data-title="comment.username"
+        :data-title="localComment.username"
       >
         <img
-          :src="resolveUrl(comment.file_upload)"
+          :src="resolveUrl(localComment.file_upload)"
           class="comment-image-preview"
         />
       </a>
     </div>
 
     <!-- Show download link for text file -->
-    <div v-else-if="isTextFile(comment.file_upload)">
-      <a :href="resolveUrl(comment.file_upload)" target="_blank">📎 Download attached file</a>
+    <div v-else-if="isTextFile(localComment.file_upload)">
+      <a :href="resolveUrl(localComment.file_upload)" target="_blank">📎 Download attached file</a>
     </div>
 
     <!-- Display replies recursively -->
-    <div class="replies" v-if="comment.replies && comment.replies.length">
+    <div class="replies" v-if="localComment.replies && localComment.replies.length">
       <CommentItem
-        v-for="reply in comment.replies"
+        v-for="reply in localComment.replies"
         :key="reply.id"
         :comment="reply"
       />
@@ -52,7 +52,7 @@
   <button @click="toggleReply" style="margin-bottom: 20px;">↩️ Reply</button>
 
   <div v-if="showReplyForm" class="reply-form" style="margin-bottom: 0px;">
-    <CommentForm :parentId="comment.id" @submitted="onReplySubmitted" />
+    <CommentForm :parentId="localComment.id" @submitted="onReplySubmitted" />
   </div>
 </template>
 
@@ -65,6 +65,9 @@ const props = defineProps({
   comment: Object
 })
 
+
+const localComment = reactive({ ...props.comment })
+  
 const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace('/api', '')
 const showReplyForm = ref(false)
 
