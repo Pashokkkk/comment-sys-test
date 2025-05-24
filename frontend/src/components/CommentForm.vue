@@ -141,7 +141,7 @@ async function handleSubmit() {
   successMessage.value = ""
 
   // Basic validation
-  if (!form.username || !form.email || !form.text || !form.captcha_text) {
+  if (!form.value.username || !form.value.email || !form.value.text || !form.value.captcha_text) {
     errorMessage.value = "⚠️ Please fill in all required fields!"
     return
   }
