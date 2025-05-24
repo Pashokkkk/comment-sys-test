@@ -8,8 +8,8 @@ const API = import.meta.env.VITE_API_URL
 
 const isLoggedIn = ref(false)
 const justLoggedOut = ref(false)
+const comments = ref([]) // ⬅ список для top-level коментарів
 
-// Check if stored token is valid
 async function checkTokenValidity() {
   const token = localStorage.getItem('access')
   if (!token) {
@@ -29,37 +29,38 @@ async function checkTokenValidity() {
   }
 }
 
-// Check token on app load
 onMounted(() => {
   checkTokenValidity()
 })
 
-// Handle login success from child component
 function handleLoginSuccess() {
   isLoggedIn.value = true
   justLoggedOut.value = false
 }
 
-// Clear tokens and log out
 function logout() {
   localStorage.removeItem('access')
   localStorage.removeItem('refresh')
   isLoggedIn.value = false
   justLoggedOut.value = true
 }
+
+function addComment(newComment) {
+  if (!newComment.parent_comment) {
+    comments.value.unshift(newComment)
+  }
+}
 </script>
 
 <template>
   <div>
-    <!-- Authenticated view -->
     <div v-if="isLoggedIn">
       <button @click="logout">Logout</button>
       <CommentForm @submitted="addComment" />
       <hr />
-      <CommentList />
+      <CommentList :initial-comments="comments" />
     </div>
 
-    <!-- Unauthenticated view -->
     <div v-else>
       <LoginForm @login-success="handleLoginSuccess" />
       <p v-if="justLoggedOut" class="info">
@@ -68,13 +69,3 @@ function logout() {
     </div>
   </div>
 </template>
-
-<style scoped>
-.info {
-  background-color: #eaf4ff;
-  color: #333;
-  padding: 10px;
-  border-left: 5px solid #2196F3;
-  margin-top: 10px;
-}
-</style>
