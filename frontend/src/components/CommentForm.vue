@@ -63,7 +63,9 @@
 import { ref, reactive, onMounted } from 'vue'
 
 const API = import.meta.env.VITE_API_URL
-  
+
+const emit = defineEmits(['submitted'])
+
 // Form state with all necessary fields
 const form = reactive({
   username: '',
@@ -194,7 +196,12 @@ async function handleSubmit() {
     }
 
     // Show success and reset form
+    const newComment = await response.json()
     successMessage.value = "✅ Comment submitted!"
+    
+    // Emit to parent so it can update immediately
+    emit("submitted", newComment)
+    
     form.username = ""
     form.email = ""
     form.homepage_url = ""
@@ -203,6 +210,7 @@ async function handleSubmit() {
     form.captcha_key = ""
     form.file = null
     refreshCaptcha()
+    
   } catch (error) {
     errorMessage.value = error.message
     console.error("❌ Submit error:", error)
