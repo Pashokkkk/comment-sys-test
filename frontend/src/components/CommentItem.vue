@@ -52,7 +52,7 @@ const props = defineProps({
   comment: Object
 })
 
-const localComment = reactive({ ...props.comment })
+const localComment = props.comment
 const showReplyForm = ref(false)
 
 function toggleReply() {
