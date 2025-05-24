@@ -67,7 +67,7 @@ const API = import.meta.env.VITE_API_URL
 const emit = defineEmits(['submitted'])
   
 // Form state with all necessary fields
-const form = reactive({
+const form = ref({
   username: '',
   email: '',
   homepage_url: '',
@@ -95,15 +95,17 @@ onMounted(() => {
 })
   
 function resetForm() {
-    form.username = ""
-    form.email = ""
-    form.homepage_url = ""
-    form.text = ""
-    form.captcha_text = ""
-    form.captcha_key = ""
-    form.file = null
-    refreshCaptcha()
-}  
+  form.value = {
+    username: '',
+    email: '',
+    homepage_url: '',
+    text: '',
+    captcha_text: '',
+    captcha_key: '',
+    file: null
+  }
+  refreshCaptcha()
+}
   
 // Fetch a new CAPTCHA image and key
 async function refreshCaptcha() {
@@ -205,10 +207,10 @@ async function handleSubmit() {
         throw new Error(`❌ Unexpected server response: ${errText}`)
       }
     }
-
+    console.log("✅ successMessage =", successMessage.value)
     // Show success and reset form
-    const newComment = await response.json()
     successMessage.value = "✅ Comment submitted!"
+    const newComment = await response.json()
 
     emit("submitted", newComment)
     
