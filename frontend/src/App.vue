@@ -8,7 +8,8 @@ const API = import.meta.env.VITE_API_URL
 
 const isLoggedIn = ref(false)
 const justLoggedOut = ref(false)
-const comments = ref([]) // ⬅ список для top-level коментарів
+const comments = ref([]) // список для top-level коментарів
+const successMessage = ref("")
 
 async function checkTokenValidity() {
   const token = localStorage.getItem('access')
@@ -19,9 +20,7 @@ async function checkTokenValidity() {
 
   try {
     const res = await fetch(`${API}/comments/`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     })
     isLoggedIn.value = res.ok
   } catch (err) {
@@ -48,6 +47,8 @@ function logout() {
 function addComment(newComment) {
   if (!newComment.parent_comment) {
     comments.value.unshift(newComment)
+    successMessage.value = "✅ Comment submitted!"
+    setTimeout(() => (successMessage.value = ""), 3000)
   }
 }
 </script>
@@ -57,6 +58,7 @@ function addComment(newComment) {
     <div v-if="isLoggedIn">
       <button @click="logout">Logout</button>
       <CommentForm @submitted="addComment" />
+      <div v-if="successMessage" class="alert success">{{ successMessage }}</div>
       <hr />
       <CommentList :initial-comments="comments" />
     </div>
@@ -70,7 +72,6 @@ function addComment(newComment) {
   </div>
 </template>
 
-
 <style scoped>
 .info {
   background-color: #eaf4ff;
@@ -78,5 +79,12 @@ function addComment(newComment) {
   padding: 10px;
   border-left: 5px solid #2196F3;
   margin-top: 10px;
+}
+.alert.success {
+  margin: 15px 0;
+  padding: 10px;
+  background-color: #d4edda;
+  color: #155724;
+  border-radius: 6px;
 }
 </style>
