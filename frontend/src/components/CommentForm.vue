@@ -1,4 +1,5 @@
 <template>
+  <div v-if="successMessage" class="alert success">{{ successMessage }}</div>
   <form @submit.prevent="handleSubmit" class="comment-form">
     <h2>💬 Leave a Comment</h2>
 
@@ -88,6 +89,7 @@ onMounted(() => {
 })
 
 function resetForm() {
+  console.log('🧹 Resetting form now...')
   form.username = ''
   form.email = ''
   form.homepage_url = ''
@@ -183,6 +185,7 @@ async function handleSubmit() {
     }
 
     successMessage.value = '✅ Comment submitted!'
+    console.log('✅ successMessage set:', successMessage.value)
 
     emit('submitted', responseBody)
 
