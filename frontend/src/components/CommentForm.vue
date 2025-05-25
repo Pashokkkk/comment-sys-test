@@ -209,12 +209,14 @@ async function handleSubmit() {
     // Show success and reset form
     successMessage.value = "✅ Comment submitted!"
     const newComment = await response.json()
-
     emit("submitted", newComment)
     
+    // Очистити форму одразу
+    resetForm()
+    
+    // Залишити successMessage видимим на 2.5 секунди
     setTimeout(() => {
       successMessage.value = ''
-      resetForm()
     }, 2500)
     
   } catch (error) {
