@@ -53,20 +53,17 @@
       <p v-html="form.text"></p>
     </div>
 
-    <!-- <div v-if="successMessage" class="alert success">{{ successMessage }}</div> -->
+    <div v-if="successMessage" class="alert success">{{ successMessage }}</div>
     <div v-if="errorMessage" class="alert error">{{ errorMessage }}</div>
   </form>
 </template>
 
 <script setup>
-// Import Vue features
 import { ref, reactive, onMounted } from 'vue'
 
 const API = import.meta.env.VITE_API_URL
-
 const emit = defineEmits(['submitted'])
-  
-// Form state with all necessary fields
+
 const form = reactive({
   username: '',
   email: '',
@@ -77,35 +74,30 @@ const form = reactive({
   file: null
 })
 
-// Props to handle optional parent comment ID
 const props = defineProps({
   parentId: Number
 })
 
-// State for captcha, preview, and messages
 const captchaImageUrl = ref('')
 const previewVisible = ref(false)
 const successMessage = ref('')
 const errorMessage = ref('')
 
-// Fetch initial CAPTCHA when component is mounted
 onMounted(() => {
-  console.log("🚀 CommentForm mounted")
   refreshCaptcha()
 })
-  
+
 function resetForm() {
-    form.username = ""
-    form.email = ""
-    form.homepage_url = ""
-    form.text = ""
-    form.captcha_text = ""
-    form.captcha_key = ""
-    form.file = null
-    refreshCaptcha()
-} 
-  
-// Fetch a new CAPTCHA image and key
+  form.username = ''
+  form.email = ''
+  form.homepage_url = ''
+  form.text = ''
+  form.captcha_text = ''
+  form.captcha_key = ''
+  form.file = null
+  refreshCaptcha()
+}
+
 async function refreshCaptcha() {
   try {
     const res = await fetch(`${API}/captcha/refresh/`)
@@ -114,17 +106,14 @@ async function refreshCaptcha() {
     captchaImageUrl.value = API.replace(/\/api\/?$/, '') + data.image_url
     form.captcha_text = ''
   } catch (error) {
-    console.error("❌ Failed to refresh CAPTCHA", error)
+    console.error('❌ Failed to refresh CAPTCHA', error)
   }
 }
 
-// Handle file input and store selected file in form
 function handleFile(event) {
   form.file = event.target.files[0]
-  console.log("📦 Selected file:", form.file)
 }
 
-// Insert basic HTML formatting tags into the comment text
 function insertTag(tag) {
   form.text += `<${tag}></${tag}>`
 }
@@ -133,99 +122,98 @@ function insertLink() {
   form.text += `<a href="https://">link</a>`
 }
 
-// Validate and submit the comment form
 async function handleSubmit() {
-  errorMessage.value = ""
-  successMessage.value = ""
+  errorMessage.value = ''
+  successMessage.value = ''
 
-  // Basic validation
   if (!form.username || !form.email || !form.text || !form.captcha_text) {
-    errorMessage.value = "⚠️ Please fill in all required fields!"
+    errorMessage.value = '⚠️ Please fill in all required fields!'
     return
   }
 
-  // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(form.email)) {
-    errorMessage.value = "⚠️ Please enter a valid email address!"
+    errorMessage.value = '⚠️ Please enter a valid email address!'
     return
   }
 
-  // Check for token
-  const token = localStorage.getItem("access")
+  const token = localStorage.getItem('access')
   if (!token) {
-    errorMessage.value = "🔒 You are not logged in. Please log in."
+    errorMessage.value = '🔒 You are not logged in. Please log in.'
     return
   }
 
-  // Prepare form data for submission
   const formData = new FormData()
-  formData.append("username", form.username)
-  formData.append("email", form.email)
-  formData.append("homepage_url", form.homepage_url || "")
-  formData.append("text", form.text)
-  formData.append("captcha_key", form.captcha_key)
-  formData.append("captcha_text", form.captcha_text)
+  formData.append('username', form.username)
+  formData.append('email', form.email)
+  formData.append('homepage_url', form.homepage_url || '')
+  formData.append('text', form.text)
+  formData.append('captcha_key', form.captcha_key)
+  formData.append('captcha_text', form.captcha_text)
 
   if (props.parentId) {
-    formData.append("parent_comment", props.parentId)
+    formData.append('parent_comment', props.parentId)
   }
 
   if (form.file) {
-    formData.append("file_upload", form.file)
+    formData.append('file_upload', form.file)
   }
 
-  // Submit the form
-try {
-  const response = await fetch(`${API}/comments/`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
-  })
+  try {
+    const response = await fetch(`${API}/comments/`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    })
 
-  const contentType = response.headers.get("content-type")
-  const responseBody = contentType && contentType.includes("application/json")
-    ? await response.json()
-    : null
+    const contentType = response.headers.get('content-type')
+    const responseBody = contentType && contentType.includes('application/json')
+      ? await response.json()
+      : null
 
-  if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error("🔒 Unauthorized. Please log in again.")
-    } else if (response.status === 500) {
-      throw new Error("💥 Server error. Try again later.")
+    if (!response.ok) {
+      throw new Error(
+        responseBody?.captcha_text?.[0] ||
+        responseBody?.text?.[0] ||
+        responseBody?.detail ||
+        '❌ Failed to submit'
+      )
     }
 
-    throw new Error(
-      responseBody?.captcha_text?.[0] ||
-      responseBody?.text?.[0] ||
-      responseBody?.detail ||
-      "❌ Failed to submit"
-    )
-  }
+    successMessage.value = '✅ Comment submitted!'
 
-  // Show success and emit new comment
-  successMessage.value = "✅ Comment submitted!"
-  emit("submitted", responseBody)
+    emit('submitted', responseBody)
 
-  // Очистити форму одразу
-  resetForm()
+    setTimeout(() => {
+      resetForm()
+      successMessage.value = ''
+    }, 2000)
 
-  // Залишити successMessage видимим на 2.5 секунди
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 2500)
-
-} catch (error) {
-  errorMessage.value = error.message
-  console.error("❌ Submit error:", error)
+  } catch (error) {
+    errorMessage.value = error.message
+    console.error('❌ Submit error:', error)
   }
 }
 </script>
 
 <style scoped>
-/* Basic styling for the comment form UI */
+.alert.success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+.alert.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
 .comment-form {
   max-width: 600px;
   margin: 0 auto;
