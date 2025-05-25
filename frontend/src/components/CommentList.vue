@@ -12,10 +12,8 @@
       <option value="-email">Email Z→A</option>
     </select>
 
-    <!-- Loading indicator -->
     <div v-if="loading" class="loader">Loading comments...</div>
 
-    <!-- Render comment items -->
     <div v-else>
       <comment-item
         v-for="comment in comments"
@@ -24,7 +22,6 @@
       />
     </div>
 
-    <!-- Pagination controls -->
     <div class="pagination" style="margin-top: 20px;">
       <button :disabled="page === 1" @click="page--">Previous</button>
       <span>Page {{ page }}</span>
@@ -49,7 +46,7 @@ export default {
 
   data() {
     return {
-      comments: [...this.initialComments],
+      comments: [],
       page: 1,
       hasMore: true,
       loading: false,
@@ -60,15 +57,15 @@ export default {
   watch: {
     page: 'fetchComments',
     ordering: 'fetchComments',
-    initialComments(newVal) {
-      this.comments = [...newVal]
-    },
   },
 
   mounted() {
-    this.fetchComments()
+    if (this.initialComments.length) {
+      this.comments = [...this.initialComments]
+    } else {
+      this.fetchComments()
+    }
 
-    // WebSocket для live-коментарів
     const socket = new WebSocket(
       (window.location.protocol === 'https:' ? 'wss://' : 'ws://') +
       window.location.host +
@@ -117,5 +114,4 @@ export default {
 .comment-content strong {
   font-weight: bold;
 }
-  
 </style>
