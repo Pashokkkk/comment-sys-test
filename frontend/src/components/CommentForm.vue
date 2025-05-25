@@ -53,7 +53,7 @@
       <p v-html="form.text"></p>
     </div>
 
-    <div v-if="successMessage" class="alert success">{{ successMessage }}</div>
+    <!-- <div v-if="successMessage" class="alert success">{{ successMessage }}</div> -->
     <div v-if="errorMessage" class="alert error">{{ errorMessage }}</div>
   </form>
 </template>
