@@ -8,7 +8,7 @@ const API = import.meta.env.VITE_API_URL
 
 const isLoggedIn = ref(false)
 const justLoggedOut = ref(false)
-const comments = ref([]) // список для top-level коментарів
+const comments = ref([]) // тільки топ-рівень
 const successMessage = ref("")
 
 async function checkTokenValidity() {
@@ -60,7 +60,8 @@ function addComment(newComment) {
       <CommentForm @submitted="addComment" />
       <div v-if="successMessage" class="alert success">{{ successMessage }}</div>
       <hr />
-      <CommentList :initial-comments="comments" />
+      <!-- Force rerender on new top-level comment -->
+      <CommentList :initial-comments="comments" :key="comments.length" />
     </div>
 
     <div v-else>
