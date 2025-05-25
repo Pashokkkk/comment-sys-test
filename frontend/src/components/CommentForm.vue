@@ -125,6 +125,8 @@ function insertLink() {
 }
 
 async function handleSubmit() {
+  console.log('🚀 handleSubmit called')
+
   errorMessage.value = ''
   successMessage.value = ''
 
@@ -184,14 +186,17 @@ async function handleSubmit() {
       )
     }else {
       successMessage.value = '✅ Comment submitted!'
-      console.log('✅ successMessage set:', successMessage.value)
+      console.log('✅ Comment successfully emitted and shown!')
+      
       emit('submitted', responseBody)
-    }
+      
+      setTimeout(() => {
+        console.log('🧹 Now resetting the form and hiding success message...')
+        resetForm()
+        successMessage.value = ''
+      }, 3000)
 
-    setTimeout(() => {
-      resetForm()
-      successMessage.value = ''
-    }, 2000)
+    }
 
   } catch (error) {
     errorMessage.value = error.message
