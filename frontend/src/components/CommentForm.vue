@@ -162,6 +162,13 @@ async function handleSubmit() {
   }
 
   try {
+    console.log("🌍 API =", API)
+    console.log("📤 Sending form data:", formData)
+    
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1])
+    }
+    
     const response = await fetch(`${API}/comments/`, {
       method: 'POST',
       headers: {
@@ -170,6 +177,9 @@ async function handleSubmit() {
       body: formData
     })
 
+    const rawText = await response.clone().text()
+    console.log("📦 Raw response body:", rawText)
+    
     const contentType = response.headers.get('content-type') || ''
     const responseBody = contentType.includes('application/json')
       ? await response.json()
