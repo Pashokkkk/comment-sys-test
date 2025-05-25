@@ -182,12 +182,11 @@ async function handleSubmit() {
         responseBody?.detail ||
         '❌ Failed to submit'
       )
+    }else {
+      successMessage.value = '✅ Comment submitted!'
+      console.log('✅ successMessage set:', successMessage.value)
+      emit('submitted', responseBody)
     }
-
-    successMessage.value = '✅ Comment submitted!'
-    console.log('✅ successMessage set:', successMessage.value)
-
-    emit('submitted', responseBody)
 
     setTimeout(() => {
       resetForm()
