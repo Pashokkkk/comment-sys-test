@@ -176,52 +176,50 @@ async function handleSubmit() {
   }
 
   // Submit the form
-  try {
-    const response = await fetch(`${API}/comments/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    })
+try {
+  const response = await fetch(`${API}/comments/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  })
 
-    const contentType = response.headers.get("content-type")
+  const contentType = response.headers.get("content-type")
+  const responseBody = contentType && contentType.includes("application/json")
+    ? await response.json()
+    : null
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error("🔒 Unauthorized. Please log in again.")
-      } else if (response.status === 500) {
-        throw new Error("💥 Server error. Try again later.")
-      }
-
-      // Show specific error if available
-      if (contentType && contentType.includes("application/json")) {
-        const err = await response.json()
-        throw new Error(
-          err?.captcha_text?.[0] || err?.text?.[0] || err?.detail || "❌ Failed to submit"
-        )
-      } else {
-        const errText = await response.text()
-        throw new Error(`❌ Unexpected server response: ${errText}`)
-      }
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("🔒 Unauthorized. Please log in again.")
+    } else if (response.status === 500) {
+      throw new Error("💥 Server error. Try again later.")
     }
-    console.log("✅ successMessage =", successMessage.value)
-    // Show success and reset form
-    successMessage.value = "✅ Comment submitted!"
-    const newComment = await response.json()
-    emit("submitted", newComment)
-    
-    // Очистити форму одразу
-    resetForm()
-    
-    // Залишити successMessage видимим на 2.5 секунди
-    setTimeout(() => {
-      successMessage.value = ''
-    }, 2500)
-    
-  } catch (error) {
-    errorMessage.value = error.message
-    console.error("❌ Submit error:", error)
+
+    throw new Error(
+      responseBody?.captcha_text?.[0] ||
+      responseBody?.text?.[0] ||
+      responseBody?.detail ||
+      "❌ Failed to submit"
+    )
+  }
+
+  // Show success and emit new comment
+  successMessage.value = "✅ Comment submitted!"
+  emit("submitted", responseBody)
+
+  // Очистити форму одразу
+  resetForm()
+
+  // Залишити successMessage видимим на 2.5 секунди
+  setTimeout(() => {
+    successMessage.value = ''
+  }, 2500)
+
+} catch (error) {
+  errorMessage.value = error.message
+  console.error("❌ Submit error:", error)
   }
 }
 </script>
