@@ -60,6 +60,9 @@ export default {
   watch: {
     page: 'fetchComments',
     ordering: 'fetchComments',
+    initialComments(newVal) {
+      this.comments = [...newVal]
+    },
   },
 
   mounted() {
