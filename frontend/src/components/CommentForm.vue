@@ -126,7 +126,6 @@ function insertLink() {
 
 async function handleSubmit() {
   console.log('🚀 handleSubmit called')
-
   errorMessage.value = ''
   successMessage.value = ''
 
@@ -158,7 +157,6 @@ async function handleSubmit() {
   if (props.parentId) {
     formData.append('parent_comment', props.parentId)
   }
-
   if (form.file) {
     formData.append('file_upload', form.file)
   }
@@ -172,10 +170,10 @@ async function handleSubmit() {
       body: formData
     })
 
-    const contentType = response.headers.get('content-type')
-    const responseBody = contentType && contentType.includes('application/json')
+    const contentType = response.headers.get('content-type') || ''
+    const responseBody = contentType.includes('application/json')
       ? await response.json()
-      : null
+      : {}
 
     if (!response.ok) {
       throw new Error(
@@ -184,25 +182,25 @@ async function handleSubmit() {
         responseBody?.detail ||
         '❌ Failed to submit'
       )
-    }else {
-      successMessage.value = '✅ Comment submitted!'
-      console.log('✅ Comment successfully emitted and shown!')
-      
-      emit('submitted', responseBody)
-      
-      setTimeout(() => {
-        console.log('🧹 Now resetting the form and hiding success message...')
-        resetForm()
-        successMessage.value = ''
-      }, 3000)
-
     }
+
+    successMessage.value = '✅ Comment submitted!'
+    console.log('✅ Comment successfully emitted and shown!')
+
+    emit('submitted', responseBody)
+
+    setTimeout(() => {
+      console.log('🧹 Now resetting the form and hiding success message...')
+      resetForm()
+      successMessage.value = ''
+    }, 3000)
 
   } catch (error) {
     errorMessage.value = error.message
     console.error('❌ Submit error:', error)
   }
 }
+
 </script>
 
 <style scoped>
