@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref } from 'vue'
 import CommentItem from './CommentItem.vue'
 import CommentForm from './CommentForm.vue'
 
@@ -52,7 +52,6 @@ const props = defineProps({
   comment: Object
 })
 
-const localComment = props.comment
 const showReplyForm = ref(false)
 
 function toggleReply() {
@@ -65,7 +64,6 @@ function resolveUrl(path) {
   return base + path
 }
 
-
 function isImage(url) {
   return /\.(jpg|jpeg|png|gif)$/i.test(url || '')
 }
@@ -74,12 +72,12 @@ function isTextFile(url) {
   return /\.(txt|md)$/i.test(url || '')
 }
 
-async function onReplySubmitted(newReply) {
-  if (!localComment.replies) {
-    localComment.replies = []
+function onReplySubmitted(newReply) {
+  if (!props.comment.replies) {
+    props.comment.replies = []
   }
-  localComment.replies.push(newReply)  // додаємо одразу
-  showReplyForm = ref(false)
+  props.comment.replies.push(newReply)
+  showReplyForm.value = false 
 }
 </script>
 
