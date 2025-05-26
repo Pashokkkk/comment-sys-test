@@ -1,5 +1,4 @@
 <template>
-  <div v-if="successMessage" class="alert success">{{ successMessage }}</div>
   <form @submit.prevent="handleSubmit" class="comment-form">
     <h2>💬 Leave a Comment</h2>
 
