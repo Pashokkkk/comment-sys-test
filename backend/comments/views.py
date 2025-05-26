@@ -14,6 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import UserComment
 from .serializers import UserCommentSerializer
 
+import redis
 
 @api_view(['GET'])
 def captcha_refresh(request):
@@ -35,6 +36,13 @@ def test_user(request):
         return Response({"created": True})
     return Response({"exists": True})
 
+def test_redis(request):
+    r = redis.from_url(os.getenv("REDIS_URL"))
+    try:
+        r.set("test", "ok")
+        return JsonResponse({"status": "connected"})
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
 
 class UserCommentListCreateAPIView(generics.ListCreateAPIView):
     """
