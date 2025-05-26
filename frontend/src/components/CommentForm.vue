@@ -190,7 +190,6 @@ async function handleSubmit() {
       )
     }
 
-    // ✅ Успішне відправлення
     successMessage.value = '✅ Comment submitted!'
     console.log('✅ Comment successfully emitted and shown!')
 
@@ -200,7 +199,7 @@ async function handleSubmit() {
     setTimeout(() => {
       console.log('🧹 Now resetting the form and hiding success message...')
       resetForm()
-      successMessage.value = ''
+      // successMessage.value = ''
     }, 3000)
 
   } catch (error) {
