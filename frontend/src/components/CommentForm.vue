@@ -198,9 +198,11 @@ async function handleSubmit() {
     setTimeout(() => {
       console.log('🧹 Now resetting the form and hiding success message...')
       resetForm()
-      // successMessage.value = ''
     }, 3000)
 
+    setTimeout(() => {
+      successMessage.value = ''
+    }, 5000)
   } catch (error) {
     errorMessage.value = error.message
     console.error('❌ Submit error:', error)
