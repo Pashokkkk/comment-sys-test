@@ -47,8 +47,6 @@ function logout() {
 function addComment(newComment) {
   if (!newComment.parent_comment) {
     comments.value.unshift(newComment)
-    successMessage.value = "✅ Comment submitted!"
-    setTimeout(() => (successMessage.value = ""), 3000)
   }
 }
 </script>
@@ -58,7 +56,6 @@ function addComment(newComment) {
     <div v-if="isLoggedIn">
       <button @click="logout">Logout</button>
       <CommentForm @submitted="addComment" />
-      <div v-if="successMessage" class="alert success">{{ successMessage }}</div>
       <hr />
       <!-- Force rerender on new top-level comment -->
       <CommentList :initial-comments="comments" :key="comments.length" />
