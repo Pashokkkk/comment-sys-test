@@ -8,8 +8,7 @@ const API = import.meta.env.VITE_API_URL
 
 const isLoggedIn = ref(false)
 const justLoggedOut = ref(false)
-const comments = ref([]) // тільки топ-рівень
-const successMessage = ref("")
+const comments = ref([])
 
 async function checkTokenValidity() {
   const token = localStorage.getItem('access')
@@ -28,13 +27,33 @@ async function checkTokenValidity() {
   }
 }
 
-onMounted(() => {
-  checkTokenValidity()
+async function loadComments() {
+  const token = localStorage.getItem('access')
+  if (!token) return
+
+  try {
+    const res = await fetch(`${API}/comments/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    if (!res.ok) throw new Error('Failed to fetch comments')
+    const data = await res.json()
+    comments.value = data.results || data
+  } catch (err) {
+    console.error('❌ Error loading comments:', err)
+  }
+}
+
+onMounted(async () => {
+  await checkTokenValidity()
+  if (isLoggedIn.value) {
+    loadComments()
+  }
 })
 
 function handleLoginSuccess() {
   isLoggedIn.value = true
   justLoggedOut.value = false
+  loadComments()
 }
 
 function logout() {
@@ -42,12 +61,11 @@ function logout() {
   localStorage.removeItem('refresh')
   isLoggedIn.value = false
   justLoggedOut.value = true
+  comments.value = [] // очистка списку
 }
 
-function addComment(newComment) {
-  if (!newComment.parent_comment) {
-    comments.value.unshift(newComment)
-  }
+function handleCommentSubmitted() {
+  loadComments()
 }
 </script>
 
@@ -55,9 +73,8 @@ function addComment(newComment) {
   <div>
     <div v-if="isLoggedIn">
       <button @click="logout">Logout</button>
-      <CommentForm @submitted="addComment" />
+      <CommentForm @submitted="handleCommentSubmitted" />
       <hr />
-      <!-- Force rerender on new top-level comment -->
       <CommentList :initial-comments="comments" :key="comments.length" />
     </div>
 
