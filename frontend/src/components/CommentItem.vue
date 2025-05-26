@@ -79,6 +79,7 @@ async function onReplySubmitted(newReply) {
     localComment.replies = []
   }
   localComment.replies.push(newReply)  // додаємо одразу
+  showReplyForm = ref(false)
 }
 </script>
 
