@@ -1,35 +1,35 @@
 <template>
-  <div class="comment">
+  <div v-if="comment" class="comment">
     <div class="comment-header">
       <div class="comment-avatar"></div>
       <div class="comment-meta">
-        <strong>{{ localComment.username }}</strong>
-        <div class="comment-email">{{ localComment.email }}</div>
-        <div class="comment-date">{{ new Date(localComment.created_at).toLocaleString() }}</div>
+        <strong>{{ comment.username }}</strong>
+        <div class="comment-email">{{ comment.email }}</div>
+        <div class="comment-date">{{ formatDate(comment.created_at) }}</div>
       </div>
     </div>
 
-    <p v-if="localComment.homepage_url">
-      🌐 <a :href="localComment.homepage_url" target="_blank" rel="noopener noreferrer">
-        {{ localComment.homepage_url }}
+    <p v-if="comment.homepage_url">
+      🌐 <a :href="comment.homepage_url" target="_blank" rel="noopener noreferrer">
+        {{ comment.homepage_url }}
       </a>
     </p>
 
-    <div class="comment-content" v-html="localComment.text"></div>
+    <div class="comment-content" v-html="comment.text"></div>
 
-    <div v-if="isImage(localComment.file_upload)" class="comment-media">
-      <a :href="resolveUrl(localComment.file_upload)" data-lightbox="image-set" :data-title="localComment.username">
-        <img :src="resolveUrl(localComment.file_upload)" class="comment-image-preview" />
+    <div v-if="isImage(comment.file_upload)" class="comment-media">
+      <a :href="resolveUrl(comment.file_upload)" data-lightbox="image-set" :data-title="comment.username">
+        <img :src="resolveUrl(comment.file_upload)" class="comment-image-preview" />
       </a>
     </div>
 
-    <div v-else-if="isTextFile(localComment.file_upload)">
-      <a :href="resolveUrl(localComment.file_upload)" target="_blank">📎 Download attached file</a>
+    <div v-else-if="isTextFile(comment.file_upload)">
+      <a :href="resolveUrl(comment.file_upload)" target="_blank">📎 Download attached file</a>
     </div>
 
-    <div class="replies" v-if="localComment.replies && localComment.replies.length">
+    <div class="replies" v-if="comment.replies && comment.replies.length">
       <CommentItem
-        v-for="reply in localComment.replies"
+        v-for="reply in comment.replies"
         :key="reply.id"
         :comment="reply"
       />
@@ -38,7 +38,7 @@
     <button @click="toggleReply" style="margin-bottom: 20px;">↩️ Reply</button>
 
     <div v-if="showReplyForm" class="reply-form" style="margin-bottom: 0px;">
-      <CommentForm :parentId="localComment.id" @submitted="onReplySubmitted" />
+      <CommentForm :parentId="comment.id" @submitted="onReplySubmitted" />
     </div>
   </div>
 </template>
@@ -72,16 +72,19 @@ function isTextFile(url) {
   return /\.(txt|md)$/i.test(url || '')
 }
 
+function formatDate(dateString) {
+  if (!dateString) return ''
+  return new Date(dateString).toLocaleString()
+}
+
 function onReplySubmitted(newReply) {
   if (!props.comment.replies) {
     props.comment.replies = []
   }
   props.comment.replies.push(newReply)
-  showReplyForm.value = false 
+  showReplyForm.value = false
 }
 </script>
-
-
 
 <style scoped>
 .comment {
