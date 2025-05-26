@@ -186,12 +186,21 @@ async function handleSubmit() {
       : {}
 
     if (!response.ok) {
-      throw new Error(
+      const errorText =
         responseBody?.captcha_text?.[0] ||
         responseBody?.text?.[0] ||
         responseBody?.detail ||
         '❌ Failed to submit'
-      )
+    
+      if (
+        response.status === 401 &&
+        responseBody?.code === 'token_not_valid' &&
+        responseBody?.messages?.some(msg => msg.message?.includes('Token is expired'))
+      ) {
+        throw new Error('🔑 Your session has expired. Please log in again.')
+      }
+    
+      throw new Error(errorText)
     }
 
     successMessage.value = '✅ Comment submitted!'
