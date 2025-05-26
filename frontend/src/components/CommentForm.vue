@@ -37,7 +37,7 @@
 
     <div class="form-group">
       <label>Upload File (optional):</label>
-      <input type="file" @change="handleFile" />
+      <input type="file" @change="handleFile" ref="fileInput" />
     </div>
 
     <div class="form-actions">
@@ -60,6 +60,8 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+
+const fileInput = ref(null)
 
 const API = import.meta.env.VITE_API_URL
 const emit = defineEmits(['submitted'])
@@ -96,6 +98,9 @@ function resetForm() {
   form.captcha_text = ''
   form.captcha_key = ''
   form.file = null
+  if (fileInput.value) {
+    fileInput.value.value = '' 
+  }
   refreshCaptcha()
 }
 
