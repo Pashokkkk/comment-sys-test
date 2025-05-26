@@ -163,12 +163,11 @@ async function handleSubmit() {
 
   try {
     console.log("🌍 API =", API)
-    console.log("📤 Sending form data:", formData)
-    
+    console.log("📤 Sending form data:")
     for (let pair of formData.entries()) {
       console.log(`${pair[0]}:`, pair[1])
     }
-    
+
     const response = await fetch(`${API}/comments/`, {
       method: 'POST',
       headers: {
@@ -177,9 +176,6 @@ async function handleSubmit() {
       body: formData
     })
 
-    const rawText = await response.clone().text()
-    console.log("📦 Raw response body:", rawText)
-    
     const contentType = response.headers.get('content-type') || ''
     const responseBody = contentType.includes('application/json')
       ? await response.json()
@@ -194,24 +190,25 @@ async function handleSubmit() {
       )
     }
 
-    if (response.status === 500 && rawText.includes("Server Error") && responseBody?.id) {
-      successMessage.value = '✅ Comment submitted!'
-      console.log('✅ Comment successfully emitted and shown!')
-  
-      emit('submitted', responseBody)
-  
-      setTimeout(() => {
-        console.log('🧹 Now resetting the form and hiding success message...')
-        resetForm()
-        successMessage.value = ''
-      }, 3000)
-    }
+    // ✅ Успішне відправлення
+    successMessage.value = '✅ Comment submitted!'
+    console.log('✅ Comment successfully emitted and shown!')
+
+    emit('submitted', responseBody)
+
+    // Очистка форми через 3 сек
+    setTimeout(() => {
+      console.log('🧹 Now resetting the form and hiding success message...')
+      resetForm()
+      successMessage.value = ''
+    }, 3000)
 
   } catch (error) {
     errorMessage.value = error.message
     console.error('❌ Submit error:', error)
   }
 }
+
 
 </script>
 
