@@ -194,16 +194,18 @@ async function handleSubmit() {
       )
     }
 
-    successMessage.value = '✅ Comment submitted!'
-    console.log('✅ Comment successfully emitted and shown!')
-
-    emit('submitted', responseBody)
-
-    setTimeout(() => {
-      console.log('🧹 Now resetting the form and hiding success message...')
-      resetForm()
-      successMessage.value = ''
-    }, 3000)
+    if (response.status === 500 && rawText.includes("Server Error") && responseBody?.id) {
+      successMessage.value = '✅ Comment submitted!'
+      console.log('✅ Comment successfully emitted and shown!')
+  
+      emit('submitted', responseBody)
+  
+      setTimeout(() => {
+        console.log('🧹 Now resetting the form and hiding success message...')
+        resetForm()
+        successMessage.value = ''
+      }, 3000)
+    }
 
   } catch (error) {
     errorMessage.value = error.message
