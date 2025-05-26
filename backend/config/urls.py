@@ -13,7 +13,6 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('comments.urls')),
-    path('api/comments/', UserCommentListCreateAPIView.as_view()),
     path('captcha/', include('captcha.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
