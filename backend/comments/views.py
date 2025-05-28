@@ -18,6 +18,10 @@ import redis
 
 
 @api_view(['GET'])
+def welcome_api(request):
+    return Response({"message": "Welcome to the Comment System API 🧠"})
+    
+@api_view(['GET'])
 def captcha_refresh(request):
     """
     Refresh CAPTCHA: return new key and image URL.
