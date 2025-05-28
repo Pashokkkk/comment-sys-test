@@ -16,6 +16,7 @@ from .serializers import UserCommentSerializer
 
 import redis
 
+
 @api_view(['GET'])
 def captcha_refresh(request):
     """
