@@ -49,7 +49,7 @@ Authorization: Bearer <access_token>
 - 🧠 CAPTCHA verification with refresh
 - 🖼 File uploads: .jpg, .png, .txt, .md
 - ✅ Comment preview before submission
-- ✅ Safe HTML tags: `<i>`, `<strong>`, `<code>`, `<a>`
+- ✅ Supports **allowed HTML tags**: `<i>`, `<strong>`, `<code>`, `<a>`
 - ⚠️ HTML validation: only closed tags allowed
 - 📎 Pagination, sorting, and filters
 - ✨ Real-time updates via WebSocket (no reload!)
