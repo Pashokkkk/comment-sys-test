@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import captcha_refresh, UserCommentListCreateAPIView
+from .views import captcha_refresh, UserCommentListCreateAPIView, welcome_api
 
 urlpatterns = [
     path('', welcome_api),
