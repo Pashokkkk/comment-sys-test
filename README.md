@@ -1,66 +1,25 @@
-# 📝 Comment System (Django + Vue + JWT + WebSocket + Docker)
+# 📝 Comment System (Deployed: Django + Vue + JWT + WebSocket + Docker)
 
-A full-featured comment system with nested replies, JWT authentication, CAPTCHA, file uploads, live updates via WebSocket, and modern Vue.js SPA.
-
----
-
-## ✅ 1. Clone the repository
-
-```bash
-git clone https://github.com/Pashokkkk/comment-system.git
-cd comment_system
-```
-
-## ✅ 2. Start the project
-
-```bash
-docker-compose up --build
-```
-створив суперкористувача, виконай:
-docker exec -it django-app python manage.py createsuperuser
-
-Виконай в контейнері Django такі дві команди:
-docker exec -it django-app python manage.py makemigrations
-docker exec -it django-app python manage.py migrate
-
-
-Перейди в frontend/ і виконай:
-npm install
-npm run dev
-
-This will:
-
-- build Docker images (Django + Vue)
-- start backend at http://localhost:8000
-- serve frontend SPA at http://localhost:5173/static/
-- create Redis container (for Celery/WebSocket)
-- enable WebSocket via Daphne
+A fully deployed comment system with nested replies, JWT authentication, CAPTCHA, image/file uploads, live updates via WebSocket, and SPA frontend powered by Vue.js.
 
 ---
+
 
 ## 🔗 Access:
 
 | Service         | URL                                             |
 |------------------|--------------------------------------------------|
-| 🎨 Frontend SPA  | [http://localhost:5173/static/](http://localhost:5173/static/) |
-| ⚙ Django Admin   | [http://localhost:8000/admin/](http://localhost:8000/admin/) |
-| 🧠 API           | [http://localhost:8000/api/](http://localhost:8000/api/) |
-| 🔐 WebSocket     | `ws://localhost:8000/ws/comments/`             |
+| 🎨 Frontend SPA  | [https://comment-sys-test.onrender.com) |
+| ⚙ Django Admin   | [https://comment-sys-test.onrender.com/admin/) |
+
 
 ---
 
-## ✅ 4. Create a superuser (for admin)
 
-```bash
-docker exec -it django-app python manage.py createsuperuser
+## 🔐 JWT Login (for authenticated commenting)
+
 ```
-
----
-
-## 🔐 JWT Login
-
-```http
-POST http://localhost:8000/api/token/
+POST https://comment-sys-test.onrender.com/api/token/
 Content-Type: application/json
 
 {
@@ -71,10 +30,10 @@ Content-Type: application/json
 
 Response:
 
-```json
+```
 {
-  "refresh": "...",
-  "access": "..."
+  "refresh": "<...>",
+  "access": "<...>"
 }
 ```
 
@@ -88,84 +47,51 @@ Authorization: Bearer <access_token>
 
 ## 🔧 Features implemented:
 
-- 📬 Submit comments via form with CAPTCHA
-- 🖼 Upload images and files (jpg/png/txt/md)
-- ✅ Supports **allowed HTML tags**: `<i>`, `<strong>`, `<code>`, `<a>`
-- ✅ Validates correct closing of HTML tags before saving
-- 📎 Comment preview before submission
-- 🧵 Nested comment replies (hierarchy)
-- 🔃 Live updates via **WebSocket**
-- 📥 Pagination and sorting (username, email, date)
-- 🗃 Django Admin for comment moderation
-- ✅ CAPTCHA verification (with key refresh)
-- 🔐 JWT login from frontend form
-- ✉️ Send email notifications (via Celery)
-- 📦 Dockerized setup (runs via Daphne)
-- 🧠 Caching (partially using DRF)
-- 📡 WebSocket (Channels + Vue.js listener)
-- 🗂 File validation: type, size
+- 💬 Top-level and nested replies
+- 🔐 JWT auth with token refresh (auto handled in frontend)
+- 🧠 CAPTCHA verification with refresh
+- 🖼 File uploads: .jpg, .png, .txt, .md
+- ✅ Comment preview before submission
+- ✅ Safe HTML tags: <i>, <strong>, <code>, <a>
+- ⚠️ HTML validation: only closed tags allowed
+- 📎 Pagination, sorting, and filters
+- ✨ Real-time updates via WebSocket (no reload!)
+- ✅ Responsive SPA with Vue 3
+- 📦 Dockerized backend + frontend
+- 📂 Media files persist correctly across deploys (via media/ volume)
 
 ---
 
-## 📁 Project structure
-
-```
-comment_system/
-│
-├── backend/
-│   ├── comments/
-│   ├── config/
-│   ├── frontend_dist/
-│   ├── static/
-│   ├── staticfiles/
-│   ├── venv/
-│   └── manage.py
-│
-├── frontend/
-│   ├── .vscode/
-│   ├── dist/
-│   ├── frontend/
-│   ├── node_modules/
-│   ├── public/
-│   ├── src/
-│   ├── .env
-│   ├── index.html
-│   ├── jsconfig.json
-│   ├── package.json
-│   └── vite.config.js
-│
-├── media/
-├── docker-compose.yml
-├── Dockerfile
-├── README.md
-├── .gitignore
-└── requirements.txt
-```
+## 🛠 Stack
+- Backend: Django + Django REST + Channels
+- Frontend: Vue 3 (Vite)
+- Auth: JWT (SimpleJWT)
+- Real-time: WebSocket (Channels)
+- Queueing: Celery + Redis
+- Deployment: Render.com
+- CAPTCHA: django-simple-captcha
+- Others: Docker, Lightbox, Tailwind/Bootstrap (if any)🔎 WebSocket check
 
 ---
 
-## 🔎 WebSocket check
+## ⚙ Deployment Notes
+- Media files persist in media/ and are served from Django via MEDIA_URL.
 
-- Open DevTools > Network > WS
-- Confirm connection to: `ws://localhost:8000/ws/comments/`
-- Status should be `101 Switching Protocols`
-- Create a comment → it should appear live without refreshing
+- Redis is hosted via Redis Cloud and configured via the REDIS_URL env var.
 
----
+- JWT tokens auto-refresh when expired.
 
-## 🛠 Technologies Used
+- Static files are bundled into the Vue build and served via WhiteNoise.
 
-- Python 3.10
-- Django + Django REST Framework
-- Vue 3 (Vite)
-- Channels (ASGI, WebSocket)
-- JWT (SimpleJWT)
-- Pillow, CAPTCHA
-- Celery + Redis
-- Docker + Daphne
+- WebSocket traffic handled via Daphne server.
 
 ---
 
-## 📸 Demo
+## ❓ Troubleshooting
+- Token Expired: You’ll see Given token not valid for any token type – please log in again.
 
-https://youtu.be/8YWVHTzGBq8
+- CAPTCHA not matching: Ensure correct key-text pair, or refresh the CAPTCHA.
+
+- Media not saving: Confirm media/ directory is writeable and not excluded by .dockerignore.
+
+
