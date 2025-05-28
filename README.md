@@ -4,7 +4,6 @@ A fully deployed comment system with nested replies, JWT authentication, CAPTCHA
 
 ---
 
-
 ## 🔗 Access:
 
 | Service         | URL                                             |
@@ -12,13 +11,11 @@ A fully deployed comment system with nested replies, JWT authentication, CAPTCHA
 | 🎨 Frontend SPA  | [https://comment-sys-test.onrender.com) |
 | ⚙ Django Admin   | [https://comment-sys-test.onrender.com/admin/) |
 
-
 ---
-
 
 ## 🔐 JWT Login (for authenticated commenting)
 
-```
+```http
 POST https://comment-sys-test.onrender.com/api/token/
 Content-Type: application/json
 
@@ -30,7 +27,7 @@ Content-Type: application/json
 
 Response:
 
-```
+```json
 {
   "refresh": "<...>",
   "access": "<...>"
@@ -76,13 +73,9 @@ Authorization: Bearer <access_token>
 
 ## ⚙ Deployment Notes
 - Media files persist in media/ and are served from Django via MEDIA_URL.
-
 - Redis is hosted via Redis Cloud and configured via the REDIS_URL env var.
-
 - JWT tokens auto-refresh when expired.
-
 - Static files are bundled into the Vue build and served via WhiteNoise.
-
 - WebSocket traffic handled via Daphne server.
 
 ---
