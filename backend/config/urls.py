@@ -5,19 +5,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve
 from comments.views import UserCommentListCreateAPIView
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
-@api_view(['GET'])
-def api_root(request):
-    return Response({"message": "Welcome to the Comment System API 🎉"})
 
 urlpatterns = [
-    path('', api_root),
     path('admin/', admin.site.urls),
     path('api/', include('comments.urls')),
     path('captcha/', include('captcha.urls')),
